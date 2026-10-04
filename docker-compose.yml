@@ -1,0 +1,25 @@
+services:
+
+  student-service:
+    build: ./student-service
+    container_name: student-service
+    ports:
+      - "8001:8000"
+
+  parcel-service:
+    build: ./parcel-service
+    container_name: parcel-service
+    ports:
+      - "8002:8000"
+
+  pickup-service:
+    build: ./pickup-service
+    container_name: pickup-service
+    ports:
+      - "8003:8000"
+
+  storage-service:
+    build: ./storage-service
+    container_name: storage-service
+    ports:
+      - "8004:8000"
