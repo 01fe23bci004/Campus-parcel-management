@@ -1,6 +1,6 @@
 # Campus-parcel-management
 
-> **A containerized, microservice-based parcel management platform for campus environments â€” designed around independent services, REST APIs, service-to-service validation, local persistence, Docker orchestration, and measured performance under concurrent load.**
+> **A containerized, microservice-based parcel management platform for campus environments - designed around independent services, REST APIs, service-to-service validation, local persistence, Docker orchestration, and measured performance under concurrent load.**
 
 ![Architecture](https://img.shields.io/badge/Architecture-Microservices-0A66C2)
 ![Docker](https://img.shields.io/badge/Deployment-Docker%20Compose-2496ED)
@@ -11,16 +11,16 @@
 
 ---
 
-##  Project Overview
+## Project Overview
 
 The **Campus Parcel Management System** is a four-service microservice application that models a parcel workflow inside a university or campus environment.
 
 Instead of implementing the complete system as one monolithic application, the platform separates responsibilities into four independently deployable services:
 
-- ðŸ‘¨“ **Student Service** â€” manages student information.
-- ðŸ“¦ **Parcel Service** â€” manages parcels and tracking information.
-- ðŸ¤ **Pickup Service** â€” manages pickup requests and coordinates validation across services.
-- ðŸ—„ï¸ **Storage Service** â€” manages parcel-storage locations and their availability.
+-  **Student Service** - manages student information.
+-  **Parcel Service** - manages parcels and tracking information.
+-  **Pickup Service** - manages pickup requests and coordinates validation across services.
+-  **Storage Service** - manages parcel-storage locations and their availability.
 
 The complete application is orchestrated using **Docker Compose**, allowing all four services to run together as a reproducible local deployment.
 
@@ -35,34 +35,34 @@ This gives the project a genuine service-to-service workflow rather than four co
 
 ---
 
-# ðŸ§­ Table of Contents
+# Table of Contents
 
-- [Project Overview](#-project-overview)
-- [System Highlights](#-system-highlights)
-- [Architecture](#-architecture)
-- [Service Responsibilities](#-service-responsibilities)
-- [Technology Stack](#-technology-stack)
-- [Service Ports](#-service-ports)
-- [Project Structure](#-project-structure)
-- [API Reference](#-api-reference)
-- [Inter-Service Communication](#-inter-service-communication)
-- [Data Management](#-data-management)
-- [Docker Deployment](#-docker-deployment)
-- [Running the Project](#-running-the-project)
-- [Functional Validation](#-functional-validation)
-- [Performance Testing](#-performance-testing)
-- [Performance Results](#-performance-results)
-- [Performance Graphs](#-performance-graphs)
-- [Evidence & Screenshots](#-evidence--screenshots)
-- [Design Decisions](#-design-decisions)
-- [Strengths](#-strengths)
-- [Current Limitations](#-current-limitations)
-- [Future Improvements](#-future-improvements)
+- [Project Overview](#project-overview)
+- [System Highlights](#system-highlights)
+- [Architecture](#architecture)
+- [Service Responsibilities](#service-responsibilities)
+- [Technology Stack](#technology-stack)
+- [Service Ports](#service-ports)
+- [Project Structure](#project-structure)
+- [API Reference](#api-reference)
+- [Inter-Service Communication](#inter-service-communication)
+- [Data Management](#data-management)
+- [Docker Deployment](#docker-deployment)
+- [Running the Project](#running-the-project)
+- [Functional Validation](#functional-validation)
+- [Performance Testing](#performance-testing)
+- [Performance Results](#performance-results)
+- [Performance Graphs](#performance-graphs)
+- [Evidence & Screenshots](#evidence--screenshots)
+- [Design Decisions](#design-decisions)
+- [Strengths](#strengths)
+- [Current Limitations](#current-limitations)
+- [Future Improvements](#future-improvements)
 - [Conclusion](#-conclusion)
 
 ---
 
-# âœ¨ System Highlights
+# System Highlights
 
 | Capability | Implementation |
 |---|---|
@@ -72,7 +72,7 @@ This gives the project a genuine service-to-service workflow rather than four co
 | Student management | Full CRUD |
 | Parcel management | Full CRUD |
 | Pickup management | Create, read, complete |
-| Service validation | Pickup â†’ Parcel + Student |
+| Service validation | Pickup -> Parcel + Student |
 | Storage management | Create, list, assign, release |
 | Persistence | SQLite for Student, Parcel and Pickup services |
 | Storage state | In-memory for Storage Service |
@@ -82,7 +82,7 @@ This gives the project a genuine service-to-service workflow rather than four co
 
 ---
 
-# ðŸ—ï¸ Architecture
+# Architecture
 
 The system follows a lightweight microservice architecture in which each service owns a specific business responsibility.
 
@@ -111,36 +111,36 @@ flowchart LR
     end
 ```
 
-### ðŸ”„ Core Pickup Workflow
+### Core Pickup Workflow
 
 The most important cross-service workflow is:
 
 ```text
 Client
-  â”‚
-  â”‚ POST /pickup
-  â–¼
+  |
+  | POST /pickup
+  v
 Pickup Service
-  â”‚
-  â”œâ”€â”€â–º Parcel Service
-  â”‚       â””â”€â”€ GET /parcels/{parcel_id}
-  â”‚
-  â”œâ”€â”€â–º Student Service
-  â”‚       â””â”€â”€ GET /students/{student_id}
-  â”‚
-  â–¼
+  |
+  |--> Parcel Service
+  |       \-- GET /parcels/{parcel_id}
+  |
+  |--> Student Service
+  |       \-- GET /students/{student_id}
+  |
+  v
 SQLite pickups.db
-  â”‚
-  â””â”€â”€â–º Pickup created with status = PENDING
+  |
+  \--> Pickup created with status = PENDING
 ```
 
 This validation sequence demonstrates how one microservice can depend on authoritative information exposed by other services without directly accessing their databases.
 
 ---
 
-# ðŸ§©️ Service Responsibilities
+# Service Responsibilities
 
-## ðŸ‘¨â€ðŸŽ“ Student Service
+## Student Service
 
 **Framework:** FastAPI  
 **Database:** SQLite (`student.db`)  
@@ -168,7 +168,7 @@ This validation sequence demonstrates how one microservice can depend on authori
 
 ---
 
-## ðŸ“¦ Parcel Service
+## Parcel Service
 
 **Framework:** Flask  
 **Database:** SQLite (`parcels.db`)  
@@ -199,7 +199,7 @@ The parcel service also enforces a unique `tracking_id`.
 
 ---
 
-## ðŸ¤ Pickup Service
+## Pickup Service
 
 **Framework:** Flask  
 **Database:** SQLite (`pickups.db`)  
@@ -240,7 +240,7 @@ COMPLETED
 
 ---
 
-## ðŸ—„ï¸ Storage Service
+## Storage Service
 
 **Framework:** FastAPI  
 **Storage model:** In-memory Python list  
@@ -271,16 +271,16 @@ COMPLETED
 The service starts with:
 
 ```text
-A-01 â†’ AVAILABLE
-A-02 â†’ AVAILABLE
-B-01 â†’ AVAILABLE
+A-01 -> AVAILABLE
+A-02 -> AVAILABLE
+B-01 -> AVAILABLE
 ```
 
 > **Note:** Storage Service state is currently held in memory, so it resets when the service/container restarts.
 
 ---
 
-# ðŸ› ï¸ Technology Stack
+# Technology Stack
 
 | Layer | Technology |
 |---|---|
@@ -300,7 +300,7 @@ B-01 â†’ AVAILABLE
 
 ---
 
-# ðŸ”Œ Service Ports
+# Service Ports
 
 | Service | Internal Port | Host Port | Base URL |
 |---|---:|---:|---|
@@ -320,59 +320,59 @@ This avoids using host-local addresses for container-to-container communication.
 
 ---
 
-# ðŸ“ Project Structure
+# Project Structure
 
 ```text
 Campus-parcel-management/
-â”‚
-â”œâ”€â”€ docker-compose.yml
-â”œâ”€â”€ load_test.py
-â”œâ”€â”€ README.md
-â”‚
-â”œâ”€â”€ student-service/
-â”‚   â”œâ”€â”€ Dockerfile
-â”‚   â”œâ”€â”€ README.md
-â”‚   â”œâ”€â”€ app.py
-â”‚   â””â”€â”€ requirements.txt
-â”‚
-â”œâ”€â”€ parcel-service/
-â”‚   â”œâ”€â”€ Dockerfile
-â”‚   â”œâ”€â”€ README.md
-â”‚   â”œâ”€â”€ app.py
-â”‚   â””â”€â”€ requirements.txt
-â”‚
-â”œâ”€â”€ pickup-service/
-â”‚   â”œâ”€â”€ Dockerfile
-â”‚   â”œâ”€â”€ README.md
-â”‚   â”œâ”€â”€ app.py
-â”‚   â””â”€â”€ requirements.txt
-â”‚
-â”œâ”€â”€ storage-service/
-â”‚   â”œâ”€â”€ Dockerfile
-â”‚   â”œâ”€â”€ README.md
-â”‚   â”œâ”€â”€ app.py
-â”‚   â””â”€â”€ requirements.txt
-â”‚
-â”œâ”€â”€ GRAPHS/
-â”‚   â”œâ”€â”€ 01_response_time_vs_concurrency.png
-â”‚   â”œâ”€â”€ 02_throughput_vs_concurrency.png
-â”‚   â”œâ”€â”€ 03_total_requests.png
-â”‚   â”œâ”€â”€ 04_peak_cpu_usage.png
-â”‚   â”œâ”€â”€ 05_peak_memory_usage.png
-â”‚   â””â”€â”€ 06_failed_requests.png
-â”‚
-â””â”€â”€ SCREENSHOTS/
-    â”œâ”€â”€ functional/API evidence
-    â”œâ”€â”€ Docker evidence
-    â”œâ”€â”€ load-test evidence
-    â””â”€â”€ Git/GitHub evidence
+|
+|-- docker-compose.yml
+|-- load_test.py
+|-- README.md
+|
+|-- student-service/
+|   |-- Dockerfile
+|   |-- README.md
+|   |-- app.py
+|   \-- requirements.txt
+|
+|-- parcel-service/
+|   |-- Dockerfile
+|   |-- README.md
+|   |-- app.py
+|   \-- requirements.txt
+|
+|-- pickup-service/
+|   |-- Dockerfile
+|   |-- README.md
+|   |-- app.py
+|   \-- requirements.txt
+|
+|-- storage-service/
+|   |-- Dockerfile
+|   |-- README.md
+|   |-- app.py
+|   \-- requirements.txt
+|
+|-- GRAPHS/
+|   |-- 01_response_time_vs_concurrency.png
+|   |-- 02_throughput_vs_concurrency.png
+|   |-- 03_total_requests.png
+|   |-- 04_peak_cpu_usage.png
+|   |-- 05_peak_memory_usage.png
+|   \-- 06_failed_requests.png
+|
+\-- SCREENSHOTS/
+    |-- functional/API evidence
+    |-- Docker evidence
+    |-- load-test evidence
+    \-- Git/GitHub evidence
 ```
 
 ---
 
-# ðŸ”— API Reference
+# API Reference
 
-## Student Service â€” `8001`
+## Student Service - `8001`
 
 ### Create Student
 
@@ -394,7 +394,7 @@ Example:
 
 ---
 
-## Parcel Service â€” `8002`
+## Parcel Service - `8002`
 
 ### Create Parcel
 
@@ -416,7 +416,7 @@ Example:
 
 ---
 
-## Pickup Service â€” `8003`
+## Pickup Service - `8003`
 
 ### Create Pickup
 
@@ -438,7 +438,7 @@ The request is accepted only after the Pickup Service successfully verifies both
 
 ---
 
-# ðŸ” Inter-Service Communication
+# Inter-Service Communication
 
 The Pickup Service is the integration point between the Student and Parcel services.
 
@@ -452,15 +452,15 @@ is received, the service performs:
 
 ```text
 1. Validate request JSON
-        â†“
+        v
 2. Verify parcel
    GET http://parcel-service:8000/parcels/{parcel_id}
-        â†“
+        v
 3. Verify student
    GET http://student-service:8000/students/{student_id}
-        â†“
+        v
 4. Insert pickup record into pickups.db
-        â†“
+        v
 5. Return HTTP 201
 ```
 
@@ -479,7 +479,7 @@ The repository includes a dedicated screenshot showing the inter-service impleme
 
 ---
 
-# ðŸ³ Docker Deployment
+# Docker Deployment
 
 The project is orchestrated through `docker-compose.yml`.
 
@@ -545,7 +545,7 @@ docker compose logs pickup-service
 
 ---
 
-# â–¶ï¸ Running the Project
+# Running the Project
 
 ## Prerequisites
 
@@ -604,7 +604,7 @@ Each service exposes a root endpoint returning its service identity and running 
 
 ---
 
-# ðŸ§ª Functional Validation
+# Functional Validation
 
 The integrated workflow was manually validated using real HTTP requests.
 
@@ -620,9 +620,9 @@ The successful pickup creation demonstrated that:
 Student exists
       +
 Parcel exists
-      â†“
+      v
 Pickup request accepted
-      â†“
+      v
 Pickup record created
 ```
 
@@ -630,16 +630,16 @@ Pickup record created
 
 ```text
 Student Service
-    â”‚
-    â”‚ student_id = 1
-    â–¼
+    |
+    | student_id = 1
+    v
 Parcel Service
-    â”‚
-    â”‚ parcel_id = 1
-    â–¼
+    |
+    | parcel_id = 1
+    v
 Pickup Service
-    â”‚
-    â–¼
+    |
+    v
 HTTP 201 Created
 status = PENDING
 ```
@@ -654,7 +654,7 @@ status = PENDING
 
 ---
 
-# ðŸ“Š Performance Testing
+# Performance Testing
 
 The project includes a custom Python load-testing program:
 
@@ -713,7 +713,7 @@ docker stats --no-stream
 
 ---
 
-# ðŸ“ˆ Performance Results
+# Performance Results
 
 The measured results were:
 
@@ -738,7 +738,7 @@ The measured results were:
 
 ---
 
-# ðŸ“‰ Performance Graphs
+# Performance Graphs
 
 ## 1. Average Response Time vs Concurrency
 
@@ -803,7 +803,7 @@ This is an important reliability result for the tested workload range.
 
 ---
 
-# ðŸ–¼ï¸ Evidence & Screenshots
+# Evidence & Screenshots
 
 The repository contains a dedicated `SCREENSHOTS/` directory with evidence covering the major implementation stages.
 
@@ -811,7 +811,7 @@ Rather than flooding the README with every screenshot, the most important eviden
 
 ---
 
-## ðŸ³ Containerized Deployment
+## Containerized Deployment
 
 The Docker Compose status confirms that the four services can run together as containers.
 
@@ -819,7 +819,7 @@ The Docker Compose status confirms that the four services can run together as co
 
 ---
 
-## â¤ï¸ Service Health
+## Service Health
 
 The root endpoint verification demonstrates that the deployed services respond successfully.
 
@@ -827,7 +827,7 @@ The root endpoint verification demonstrates that the deployed services respond s
 
 ---
 
-## ðŸ”— Service-to-Service Validation
+## Service-to-Service Validation
 
 The Pickup Service implementation demonstrates HTTP communication with the Parcel and Student services.
 
@@ -835,7 +835,7 @@ The Pickup Service implementation demonstrates HTTP communication with the Parce
 
 ---
 
-## ðŸ“¦ Successful Pickup Creation
+## Successful Pickup Creation
 
 The integrated pickup workflow was validated using a real request.
 
@@ -843,7 +843,7 @@ The integrated pickup workflow was validated using a real request.
 
 ---
 
-## ðŸš€ Highest-Concurrency Test
+## Highest-Concurrency Test
 
 The W5 evidence documents the test executed with:
 
@@ -855,7 +855,7 @@ Concurrency = 16
 
 ---
 
-## â˜ï¸ GitHub Integration
+## GitHub Integration
 
 The project was committed and successfully pushed to the GitHub repository.
 
@@ -863,7 +863,7 @@ The project was committed and successfully pushed to the GitHub repository.
 
 ---
 
-# ðŸ§  Design Decisions
+# Design Decisions
 
 ## 1. Independent service ownership
 
@@ -878,8 +878,8 @@ This makes the architecture easier to understand, test and evolve.
 Pickup validation uses HTTP calls to other services:
 
 ```text
-Pickup â†’ Parcel
-Pickup â†’ Student
+Pickup -> Parcel
+Pickup -> Student
 ```
 
 This keeps service boundaries explicit.
@@ -914,39 +914,39 @@ The script measures both application-level performance and container-level resou
 
 ---
 
-# ðŸ’ª Strengths
+# Strengths
 
-### âœ… Clear service boundaries
+### Clear service boundaries
 
 The four domains have separate implementations and separate containers.
 
-### âœ… Real inter-service communication
+### Real inter-service communication
 
 Pickup requests perform downstream verification instead of blindly accepting foreign IDs.
 
-### âœ… Containerized deployment
+### Containerized deployment
 
 The entire application can be built and launched through Docker Compose.
 
-### âœ… RESTful APIs
+### RESTful APIs
 
 The services expose clear HTTP endpoints using standard CRUD-style operations.
 
-### âœ… Measured performance
+### Measured performance
 
 The project includes a repeatable concurrency experiment rather than relying only on qualitative claims.
 
-### âœ… Resource monitoring
+### Resource monitoring
 
 CPU and memory usage were monitored alongside request performance.
 
-### âœ… Evidence-driven implementation
+### Evidence-driven implementation
 
 The repository contains implementation, Docker, functional testing, load-testing and Git/GitHub evidence.
 
 ---
 
-# âš ï¸ Current Limitations
+# Current Limitations
 
 The project is intentionally lightweight and has several areas that could be improved for production use.
 
@@ -978,28 +978,28 @@ The measured performance results represent the tested local environment. They sh
 
 ---
 
-# ðŸš€ Future Improvements
+# Future Improvements
 
 A production-oriented version could introduce:
 
-- ðŸ” JWT authentication and role-based access control
-- ðŸ˜ PostgreSQL or another production database
-- ðŸ’¾ Persistent storage for the Storage Service
-- ðŸ”„ Retry and timeout policies
-- ðŸ›¡ï¸ Circuit breakers
-- ðŸ“¬ Asynchronous messaging with RabbitMQ/Kafka
-- ðŸ“Š Prometheus + Grafana observability
-- ðŸ“ Structured centralized logging
-- ðŸ§ª Automated unit and integration tests
-- âš™️ï¸ CI/CD with GitHub Actions
-- â˜ï¸ Kubernetes deployment
-- ðŸ” Distributed tracing with OpenTelemetry
-- ðŸ”’ Secrets management
-- ðŸ“ˆ Automated performance regression testing
+-  JWT authentication and role-based access control
+-  PostgreSQL or another production database
+-  Persistent storage for the Storage Service
+-  Retry and timeout policies
+-  Circuit breakers
+-  Asynchronous messaging with RabbitMQ/Kafka
+-  Prometheus + Grafana observability
+-  Structured centralized logging
+-  Automated unit and integration tests
+-  CI/CD with GitHub Actions
+-  Kubernetes deployment
+-  Distributed tracing with OpenTelemetry
+-  Secrets management
+-  Automated performance regression testing
 
 ---
 
-# ðŸ§ª Reproducing the Performance Test
+# Reproducing the Performance Test
 
 Start the complete system:
 
@@ -1019,7 +1019,7 @@ The current script is configured to execute the final test using:
 run_test(16)
 ```
 
-For the complete W1â€“W5 experiment, the concurrency value can be changed to:
+For the complete W1-W5 experiment, the concurrency value can be changed to:
 
 ```text
 1
@@ -1033,27 +1033,27 @@ and each run can be recorded using the same methodology.
 
 ---
 
-# ðŸ“š Evidence Repository
+# Evidence Repository
 
 The repository deliberately separates visual evidence from application source code:
 
 ```text
 GRAPHS/
-    â”œâ”€â”€ performance graphs
+    |-- performance graphs
 
 SCREENSHOTS/
-    â”œâ”€â”€ service implementation
-    â”œâ”€â”€ API testing
-    â”œâ”€â”€ Docker deployment
-    â”œâ”€â”€ load testing
-    â””â”€â”€ Git/GitHub workflow
+    |-- service implementation
+    |-- API testing
+    |-- Docker deployment
+    |-- load testing
+    \-- Git/GitHub workflow
 ```
 
 This makes the project easier to evaluate without mixing implementation files and evidence artifacts.
 
 ---
 
-# ðŸ Conclusion
+# Conclusion
 
 The **Campus Parcel Management System** demonstrates a complete, containerized microservice workflow for managing students, parcels, pickups and storage within a campus environment.
 
@@ -1061,21 +1061,21 @@ The project goes beyond simply creating four APIs by demonstrating:
 
 ```text
 Independent Services
-        â†“
+        v
 Docker Containerization
-        â†“
+        v
 REST APIs
-        â†“
+        v
 Inter-Service Communication
-        â†“
+        v
 Database-Backed Operations
-        â†“
+        v
 Functional Validation
-        â†“
+        v
 Concurrent Load Testing
-        â†“
+        v
 CPU & Memory Monitoring
-        â†“
+        v
 Performance Analysis
 ```
 
@@ -1085,22 +1085,22 @@ Overall, the project provides a compact but complete demonstration of **microser
 
 ---
 
-## ðŸ“¦ Repository Evidence
+## Repository Evidence
 
 The repository includes:
 
-- `docker-compose.yml` â€” multi-service orchestration
-- `load_test.py` â€” concurrent performance test harness
-- `student-service/` â€” student management microservice
-- `parcel-service/` â€” parcel management microservice
-- `pickup-service/` â€” pickup and service-integration microservice
-- `storage-service/` â€” storage management microservice
-- `GRAPHS/` â€” performance visualizations
-- `SCREENSHOTS/` â€” implementation and testing evidence
+- `docker-compose.yml` - multi-service orchestration
+- `load_test.py` - concurrent performance test harness
+- `student-service/` - student management microservice
+- `parcel-service/` - parcel management microservice
+- `pickup-service/` - pickup and service-integration microservice
+- `storage-service/` - storage management microservice
+- `GRAPHS/` - performance visualizations
+- `SCREENSHOTS/` - implementation and testing evidence
 
 ---
 
 <p align="center">
-  <strong>ðŸŽ“ Campus Parcel Management System</strong><br>
-  <sub>Microservices â€¢ REST APIs â€¢ Docker â€¢ SQLite â€¢ Performance Engineering</sub>
+  <strong> Campus Parcel Management System</strong><br>
+  <sub>Microservices - REST APIs - Docker - SQLite - Performance Engineering</sub>
 </p>
