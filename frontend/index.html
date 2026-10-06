@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Campus Parcel Management</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">CP</div>
+        <div>
+          <h1>Campus Parcel</h1>
+          <p>Management System</p>
+        </div>
+      </div>
+
+      <nav>
+        <button class="nav-btn active" data-section="dashboard">Dashboard</button>
+        <button class="nav-btn" data-section="students">Students</button>
+        <button class="nav-btn" data-section="parcels">Parcels</button>
+        <button class="nav-btn" data-section="pickups">Pickups</button>
+        <button class="nav-btn" data-section="storage">Storage</button>
+      </nav>
+
+      <div class="sidebar-note">
+        <strong>Microservice Demo</strong>
+        <span>Frontend → Nginx → 4 backend services</span>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">CAMPUS OPERATIONS</p>
+          <h2 id="pageTitle">Dashboard</h2>
+        </div>
+        <div class="topbar-actions">
+          <span id="systemBadge" class="badge neutral">Checking services…</span>
+          <button class="secondary-btn" onclick="loadAll()">Refresh</button>
+        </div>
+      </header>
+
+      <section id="dashboard" class="page-section active-section">
+        <div class="hero-card">
+          <div>
+            <p class="eyebrow">SMART PARCEL WORKFLOW</p>
+            <h3>Manage campus parcels from one browser.</h3>
+            <p>Students, parcels, pickups and storage are handled through the existing microservices.</p>
+          </div>
+          <div class="hero-flow">
+            <span>Student</span><b>→</b><span>Parcel</span><b>→</b><span>Pickup</span><b>→</b><span>Storage</span>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card"><span>Students</span><strong id="studentCount">0</strong></div>
+          <div class="stat-card"><span>Parcels</span><strong id="parcelCount">0</strong></div>
+          <div class="stat-card"><span>Pending Pickups</span><strong id="pendingPickupCount">0</strong></div>
+          <div class="stat-card"><span>Available Storage</span><strong id="availableStorageCount">0</strong></div>
+        </div>
+
+        <div class="content-grid two-col">
+          <div class="panel">
+            <div class="panel-heading"><div><h3>Service Status</h3><p>Live health checks through the frontend gateway.</p></div></div>
+            <div id="serviceStatus" class="service-list"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-heading"><div><h3>How the workflow works</h3><p>The most important cross-service operation is pickup creation.</p></div></div>
+            <div class="workflow">
+              <div><strong>1</strong><span>Create a student.</span></div>
+              <div><strong>2</strong><span>Create a parcel for that student.</span></div>
+              <div><strong>3</strong><span>Create pickup; Pickup Service verifies student + parcel.</span></div>
+              <div><strong>4</strong><span>Complete the pickup from the browser.</span></div>
+              <div><strong>5</strong><span>Assign/release storage locations.</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="students" class="page-section">
+        <div class="section-intro"><div><p class="eyebrow">STUDENT SERVICE</p><h3>Student Management</h3><p>Create, update, view and delete student records.</p></div></div>
+        <div class="content-grid two-col">
+          <div class="panel">
+            <div class="panel-heading"><div><h3 id="studentFormTitle">Add Student</h3><p>Data is stored in the Student Service SQLite database.</p></div></div>
+            <form id="studentForm" class="form-grid">
+              <input type="hidden" id="studentId" />
+              <label>Name<input id="studentName" required placeholder="Saif Ali" /></label>
+              <label>Email<input id="studentEmail" type="email" required placeholder="saif@example.com" /></label>
+              <label>Department<input id="studentDepartment" required placeholder="CSE-AI" /></label>
+              <label>Year<input id="studentYear" type="number" min="1" max="5" required value="2" /></label>
+              <div class="form-actions"><button class="primary-btn" type="submit">Save Student</button><button class="secondary-btn" type="button" onclick="resetStudentForm()">Clear</button></div>
+            </form>
+          </div>
+          <div class="panel">
+            <div class="panel-heading"><div><h3>Students</h3><p>Current records returned by the API.</p></div></div>
+            <div class="table-wrap"><table><thead><tr><th>ID</th><th>Name</th><th>Department</th><th>Year</th><th>Actions</th></tr></thead><tbody id="studentsTable"></tbody></table></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="parcels" class="page-section">
+        <div class="section-intro"><div><p class="eyebrow">PARCEL SERVICE</p><h3>Parcel Management</h3><p>Register and track parcels linked to campus students.</p></div></div>
+        <div class="content-grid two-col">
+          <div class="panel">
+            <div class="panel-heading"><div><h3 id="parcelFormTitle">Add Parcel</h3><p>Tracking IDs must be unique.</p></div></div>
+            <form id="parcelForm" class="form-grid">
+              <input type="hidden" id="parcelId" />
+              <label>Student<select id="parcelStudent" required></select></label>
+              <label>Courier<input id="parcelCourier" required placeholder="DHL" /></label>
+              <label>Tracking ID<input id="parcelTracking" required placeholder="DHL-2026-001" /></label>
+              <label>Status<select id="parcelStatus"><option>ARRIVED</option><option>STORED</option><option>READY_FOR_PICKUP</option><option>PICKED_UP</option><option>CANCELLED</option></select></label>
+              <div class="form-actions"><button class="primary-btn" type="submit">Save Parcel</button><button class="secondary-btn" type="button" onclick="resetParcelForm()">Clear</button></div>
+            </form>
+          </div>
+          <div class="panel">
+            <div class="panel-heading"><div><h3>Parcels</h3><p>Current parcel records from the Parcel Service.</p></div></div>
+            <div class="table-wrap"><table><thead><tr><th>ID</th><th>Student</th><th>Courier</th><th>Tracking</th><th>Status</th><th>Actions</th></tr></thead><tbody id="parcelsTable"></tbody></table></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="pickups" class="page-section">
+        <div class="section-intro"><div><p class="eyebrow">PICKUP SERVICE</p><h3>Pickup Management</h3><p>Creating a pickup triggers inter-service validation.</p></div></div>
+        <div class="content-grid two-col">
+          <div class="panel">
+            <div class="panel-heading"><div><h3>Create Pickup</h3><p>Pickup Service verifies both IDs before saving.</p></div></div>
+            <form id="pickupForm" class="form-grid">
+              <label>Student<select id="pickupStudent" required></select></label>
+              <label>Parcel<select id="pickupParcel" required></select></label>
+              <div class="info-box">The backend checks <b>Student Service</b> and <b>Parcel Service</b> before returning <b>201 Created</b>.</div>
+              <div class="form-actions"><button class="primary-btn" type="submit">Create Pickup</button></div>
+            </form>
+          </div>
+          <div class="panel">
+            <div class="panel-heading"><div><h3>Pickup Requests</h3><p>Pending requests can be completed from here.</p></div></div>
+            <div class="table-wrap"><table><thead><tr><th>ID</th><th>Student</th><th>Parcel</th><th>Status</th><th>Action</th></tr></thead><tbody id="pickupsTable"></tbody></table></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="storage" class="page-section">
+        <div class="section-intro"><div><p class="eyebrow">STORAGE SERVICE</p><h3>Storage Management</h3><p>View, add, assign and release campus storage locations.</p></div></div>
+        <div class="content-grid two-col">
+          <div class="panel">
+            <div class="panel-heading"><div><h3>Add Storage</h3><p>Current storage state is held in memory by the Storage Service.</p></div></div>
+            <form id="storageForm" class="form-grid">
+              <label>Storage ID<input id="storageId" type="number" min="1" required placeholder="4" /></label>
+              <label>Location<input id="storageLocation" required placeholder="B-02" /></label>
+              <label>Initial Status<select id="storageStatus"><option>AVAILABLE</option><option>ASSIGNED</option></select></label>
+              <div class="form-actions"><button class="primary-btn" type="submit">Add Storage</button></div>
+            </form>
+            <div class="info-box warning">Note: storage resets to its initial in-memory state whenever the Storage Service/container restarts.</div>
+          </div>
+          <div class="panel">
+            <div class="panel-heading"><div><h3>Storage Locations</h3><p>Assign or release a location without using curl.</p></div></div>
+            <div class="table-wrap"><table><thead><tr><th>ID</th><th>Location</th><th>Status</th><th>Action</th></tr></thead><tbody id="storageTable"></tbody></table></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
