@@ -23,3 +23,14 @@ services:
     container_name: storage-service
     ports:
       - "8004:8000"
+
+frontend:
+    build: ./frontend
+    container_name: campus-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - student-service
+      - parcel-service
+      - pickup-service
+      - storage-service
